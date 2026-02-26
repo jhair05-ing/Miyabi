@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Reservas | Miyabi</title>
+
+    <link rel="stylesheet" th:href="@{/css/base/global.css}">
+    <link rel="stylesheet" th:href="@{/css/components/sections.css}">
+    
+    <style>
+        .admin-section {
+            padding-top: 140px; /* Espacio para que la navbar no tape el título */
+            min-height: 80vh;
+        }
+        .miyabi-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+            background: #fff;
+        }
+        .miyabi-table th {
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #eee;
+            font-family: serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+        .miyabi-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f9f9f9;
+            font-size: 0.95rem;
+        }
+        .miyabi-table tr:hover {
+            background-color: #fafafa;
+        }
+        .status-pill {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            background: #eee;
+        }
+    </style>
+</head>
+<body>
+
+    <div th:replace="~{fragments/layout/components :: navbar}"></div>
+
+    <main class="miyabi-container admin-section">
+        <header class="section-header">
+            <h2 class="reveal-text">Gestión de Salidas</h2>
+            <p>Panel administrativo para la emisión de boletas digitales y control de check-out.</p>
+        </header>
+
+        <table class="miyabi-table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Huésped</th>
+                    <th>Habitación</th>
+                    <th>Total</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="reserva : ${reservations}">
+                    <td th:text="${reserva.reservationCode}" style="font-weight: bold;"></td>
+                    <td th:text="${reserva.guest.names + ' ' + reserva.guest.surnames}"></td>
+                    <td>
+                        <span th:text="${'Hab. ' + reserva.room.roomNumber}"></span>
+                        <br>
+                        <small th:text="${reserva.room.roomType.nameType}" style="color: #888;"></small>
+                    </td>
+                    <td th:text="${'S/ ' + reserva.totalPay}"></td>
+                    <td>
+                        <button class="miyabi-link-btn" 
+                                style="border: none; background: none; cursor: pointer; padding: 0;"
+                                th:onclick="|emitirBoleta(${reserva.reservationId})|">
+                            <span class="link-btn-text">Emitir Boleta</span>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.2">
+                                <path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2" />
+                                <path d="M6 14h12v8H6z" />
+                            </svg>
+                        </button>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(reservations)}">
+                    <td colspan="5" style="text-align: center; padding: 40px; color: #999;">
+                        No hay reservas activas en este momento.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+
+    <div th:replace="~{fragments/layout/components :: footer}"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script th:src="@{/js/base/global.js}"></script>
+
+    <script>
+        /**
+         * Lógica para abrir la boleta PDF
+         * @param {number} id - ID interno de la reserva
+         */
+        function emitirBoleta(id) {
+            if (!id) {
+                console.error("Error: ID de reserva no proporcionado.");
+                return;
+            }
+            
+            // Construye la URL hacia tu RestController de JasperReports
+            const url = `/api/boleta-digital/descargar/${id}`;
+            
+            // Abrir en pestaña nueva
+            const win = window.open(url, '_blank');
+            
+            // Foco en la nueva pestaña si el navegador la bloquea como popup
+            if (win) {
+                win.focus();
+            } else {
+                alert('Por favor, permite los popups para este sitio para ver la boleta.');
+            }
+        }
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
