@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:fragment="admin-head">
+        <link rel="stylesheet" th:href="@{/css/base/global.css}">
+        <style>
+            :root {
+                --admin-sidebar-width: 260px;
+                --admin-dark: #1a1a1a;
+                --admin-accent: #b99d61;
+                --admin-bg: #f4f7f6;
+            }
+
+            body {
+                margin: 0;
+                background-color: var(--admin-bg);
+                display: flex;
+            }
+
+            /* Contenedor Principal */
+            .admin-wrapper {
+                display: flex;
+                width: 100%;
+                min-height: 100vh;
+            }
+
+            /* Barra Lateral */
+            .admin-sidebar {
+                width: var(--admin-sidebar-width);
+                background: var(--admin-dark);
+                color: white;
+                display: flex;
+                flex-direction: column;
+                position: fixed;
+                height: 100vh;
+                transition: all 0.3s;
+            }
+
+            .sidebar-header {
+                padding: 30px 20px;
+                text-align: center;
+                border-bottom: 1px solid #333;
+            }
+
+            .sidebar-header h3 {
+                color: var(--admin-accent);
+                font-family: serif;
+                letter-spacing: 2px;
+                margin: 0;
+                font-size: 1.2rem;
+            }
+
+            .sidebar-header span {
+                font-size: 0.7rem;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                color: #888;
+            }
+
+            /* Menú de Navegación */
+            .admin-menu {
+                list-style: none;
+                padding: 20px 0;
+                margin: 0;
+                flex-grow: 1;
+            }
+
+            .admin-menu li {
+                padding: 5px 20px;
+            }
+
+            .admin-menu a {
+                color: #ccc;
+                text-decoration: none;
+                display: flex;
+                align-items: center;
+                padding: 12px 15px;
+                border-radius: 8px;
+                transition: all 0.3s;
+                font-size: 0.9rem;
+            }
+
+            .admin-menu a:hover {
+                background: #333;
+                color: var(--admin-accent);
+            }
+
+            .admin-menu a.active {
+                background: var(--admin-accent);
+                color: white;
+            }
+
+            /* Contenido a la derecha */
+            .admin-main-content {
+                margin-left: var(--admin-sidebar-width);
+                flex-grow: 1;
+                padding: 40px;
+            }
+
+            .admin-footer-logout {
+                padding: 20px;
+                border-top: 1px solid #333;
+            }
+
+            .btn-logout {
+                color: #ff4d4d;
+                text-decoration: none;
+                font-size: 0.85rem;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+        </style>
+    </th:block>
+</head>
+<body>
+
+    <nav th:fragment="admin-sidebar" class="admin-sidebar">
+        <div class="sidebar-header">
+            <h3>MIYABI</h3>
+            <span>Back-Office Admin</span>
+        </div>
+        
+		<ul class="admin-menu">
+		    <li>
+		        <a th:href="@{/reservas}" 
+		           th:classappend="${#ctx.springRequestContext.requestUri.contains('/reservas') ? 'active' : ''}">
+		            <i>📋</i> Gestión de Salidas
+		        </a>
+		    </li>
+		    <li>
+		        <a href="/api/rooms">
+		            <i>🛏️</i> Habitaciones
+		        </a>
+		    </li>
+		    <li>
+		        <a href="/api/guests">
+		            <i>👥</i> Huéspedes
+		        </a>
+		    </li>
+		    <li>
+		        <a href="/api/reports/boleta-test">
+		            <i>📊</i> Reportes Globales
+		        </a>
+		    </li>
+		</ul>
+
+        <div class="admin-footer-logout">
+            <a href="/" class="btn-logout">
+                <i>⬅️</i> Salir al Sitio Público
+            </a>
+        </div>
+    </nav>
+
+</body>
+</html>
